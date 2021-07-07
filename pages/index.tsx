@@ -10,28 +10,17 @@ import { Layout } from "../src/Layout";
 import AddIcon from "@material-ui/icons/Add";
 import { TopicList } from "../src/TopicList";
 import { LoginMenu } from "../src/LoginMenu";
+import Link from "../src/Link";
 
-export default function Page() {
-  const [session, loading] = useSession();
-
+export default function TopicPage() {
   return (
     <Layout>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ width: "100%" }}
-      >
-        <Typography variant="h1">Palstala</Typography>
-        <Box>
-          {!loading && <LoginMenu user={session?.user} />}
-          {loading && <CircularProgress />}
-        </Box>
-      </Stack>
       <TopicList />
-      <Button startIcon={<AddIcon />} variant="contained">
-        New topic
-      </Button>
+      <Link href="/topic/new">
+        <Button startIcon={<AddIcon />} variant="contained">
+          New topic
+        </Button>
+      </Link>
     </Layout>
   );
 }
