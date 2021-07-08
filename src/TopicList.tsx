@@ -6,32 +6,31 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { Topic } from "@prisma/client";
+import React from "react";
+import Link from "./Link";
 
-const rows = [{ name: "Test", calories: 123, fat: 456 }];
-
-export function TopicList() {
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell align="right">Tags</TableCell>
-            <TableCell align="right">Author</TableCell>
+export const TopicList: React.FC<{ topics: Topic[] }> = (props) => (
+  <TableContainer>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Title</TableCell>
+          <TableCell align="right">Tags</TableCell>
+          <TableCell align="right">Author</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {props.topics.map((row) => (
+          <TableRow key={row.id}>
+            <TableCell component="th" scope="row">
+              <Link href={`/topics/${row.id}`}>{row.title}</Link>
+            </TableCell>
+            <TableCell align="right">{row.title}</TableCell>
+            <TableCell align="right">{row.title}</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);

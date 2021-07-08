@@ -1,26 +1,28 @@
-import { useSession } from "next-auth/client";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography,
-} from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { Layout } from "../src/Layout";
 import AddIcon from "@material-ui/icons/Add";
 import { TopicList } from "../src/TopicList";
-import { LoginMenu } from "../src/LoginMenu";
 import Link from "../src/Link";
+import { GetServerSideProps } from "next";
+import { PrismaClient, Topic } from "@prisma/client";
+import React from "react";
 
-export default function TopicPage() {
-  return (
-    <Layout>
-      <TopicList />
-      <Link href="/topic/new">
-        <Button startIcon={<AddIcon />} variant="contained">
-          New topic
-        </Button>
-      </Link>
-    </Layout>
-  );
-}
+const TopicsPage: React.FC<{ topics: Topic[] }> = (props) => (
+  <Layout>
+    <TopicList topics={props.topics} />
+    <Link href="/topics/new">
+      <Button startIcon={<AddIcon />} variant="contained">
+        New topic
+      </Button>
+    </Link>
+  </Layout>
+);
+export default TopicsPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+  const topics = await prisma.topic.findMany();
+  return {
+    props: { topics },
+  };
+};

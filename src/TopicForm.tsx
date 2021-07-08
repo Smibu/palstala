@@ -4,17 +4,14 @@ import { Button, Stack, TextField } from "@material-ui/core";
 
 type FormData = { title: string; content: string };
 
-export const TopicForm: React.FC = (props) => {
+export const TopicForm = (props: { onSubmit: (v: FormData) => void }) => {
   const { handleSubmit, control } = useForm<FormData>({
     defaultValues: { title: "", content: "" },
     mode: "onChange",
   });
 
-  const onSubmit = (v: FormData) => {
-    console.log(v);
-  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(props.onSubmit)}>
       <Stack spacing={2} alignItems="flex-start">
         <Controller
           render={({
