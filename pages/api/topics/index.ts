@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
+import prisma from "../../../src/client";
 
 type Data =
   | {
@@ -22,7 +22,6 @@ export default async function handler(
         res.status(401).json({ error: "Authorization required" });
         break;
       }
-      const prisma = new PrismaClient();
       const topic = await prisma.topic.create({
         data: {
           title: req.body.title,

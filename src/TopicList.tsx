@@ -9,15 +9,19 @@ import {
 import { Topic } from "@prisma/client";
 import React from "react";
 import Link from "./Link";
+import { UserDisplay } from "./UserDisplay";
+import { UserAvatarGroup } from "./UserAvatarGroup";
 
-export const TopicList: React.FC<{ topics: Topic[] }> = (props) => (
+export const TopicList: React.FC<{
+  topics: (Topic & { users: UserDisplay[] })[];
+}> = (props) => (
   <TableContainer>
     <Table>
       <TableHead>
         <TableRow>
           <TableCell>Title</TableCell>
           <TableCell align="right">Tags</TableCell>
-          <TableCell align="right">Author</TableCell>
+          <TableCell align="right">Participants</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -26,8 +30,10 @@ export const TopicList: React.FC<{ topics: Topic[] }> = (props) => (
             <TableCell component="th" scope="row">
               <Link href={`/topics/${row.id}`}>{row.title}</Link>
             </TableCell>
-            <TableCell align="right">{row.title}</TableCell>
-            <TableCell align="right">{row.title}</TableCell>
+            <TableCell align="right">TODO</TableCell>
+            <TableCell align="right">
+              <UserAvatarGroup users={row.users} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

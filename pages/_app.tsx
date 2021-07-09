@@ -6,9 +6,17 @@ import Head from "next/head";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import theme from "../src/theme";
 import createCache from "@emotion/cache";
+import Router from "next/router";
+import NProgress from "nprogress";
 
 const cache = createCache({ key: "css", prepend: true });
 cache.compat = true;
+
+Router.events.on("routeChangeStart", (url) => {
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -17,6 +25,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Head>
           <title>Palstala</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://unpkg.com/nprogress@0.2.0/nprogress.css"
+          />
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />

@@ -1,10 +1,16 @@
 import { Layout } from "../../src/Layout";
 import { Stack, Typography } from "@material-ui/core";
-import { GetServerSideProps } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
-import { Post, PrismaClient, Topic } from "@prisma/client";
+import { Post } from "@prisma/client";
+import prisma from "../../src/client";
 
-const TopicPage: React.FC<{ topic: Topic & { posts: Post[] } }> = (props) => {
+const TopicPage: React.FC<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = (props) => {
+  if (!props.topic) {
+    return <Typography>Topic not found</Typography>;
+  }
   return (
     <Layout>
       <Typography variant={"h4"}>{props.topic.title}</Typography>
@@ -23,8 +29,9 @@ const PostC: React.FC<{ post: Post }> = (props) => {
 
 export default TopicPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const topic = await prisma.topic.findUnique({
     where: { id: context.params!.id as string },
     include: {
