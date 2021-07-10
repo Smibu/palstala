@@ -61,7 +61,9 @@ export const getServerSideProps = async (
       topics: topics.map((t) => ({
         id: t.id,
         title: t.title,
-        users: t.posts.map((p) => userMap.get(p.authorId)!),
+        users: [...new Set(t.posts.map((p) => p.authorId))].map(
+          (uid) => userMap.get(uid)!
+        ),
       })),
     },
   };

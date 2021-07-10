@@ -21,17 +21,14 @@ export default async function handler(
         res.status(401).json({ error: "Authorization required" });
         break;
       }
-      const topic = await prisma.topic.create({
+      const post = await prisma.post.create({
         data: {
-          title: req.body.title,
-          posts: {
-            create: [
-              { content: req.body.content, authorId: sess.userId as string },
-            ],
-          },
+          content: req.body.content,
+          authorId: sess.userId as string,
+          topicId: req.body.topic,
         },
       });
-      res.status(200).json({ id: topic.id });
+      res.status(200).json({ id: post.id });
       break;
   }
 }

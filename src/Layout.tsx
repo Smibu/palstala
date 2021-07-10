@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import { LoginMenu } from "./LoginMenu";
 import { useSession } from "next-auth/client";
+import Link from "./Link";
 
 export const Layout: React.FC = (props) => {
   const [session, loading] = useSession();
@@ -19,7 +20,9 @@ export const Layout: React.FC = (props) => {
           alignItems="center"
           sx={{ width: "100%" }}
         >
-          <Typography variant="h2">Palstala</Typography>
+          <Typography variant="h2">
+            <Link href={"/"}>Palstala</Link>
+          </Typography>
           <Box>
             {!loading && <LoginMenu user={session?.user} />}
             {loading && <CircularProgress />}
