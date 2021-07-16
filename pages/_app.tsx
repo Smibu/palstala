@@ -8,6 +8,7 @@ import theme from "../src/theme";
 import createCache from "@emotion/cache";
 import Router from "next/router";
 import NProgress from "nprogress";
+import { Session } from "next-auth";
 
 const cache = createCache({ key: "css", prepend: true });
 cache.compat = true;
@@ -20,7 +21,7 @@ Router.events.on("routeChangeError", () => NProgress.done());
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Provider session={pageProps.session}>
+    <Provider session={(pageProps as { session?: Session }).session}>
       <CacheProvider value={cache}>
         <Head>
           <title>Palstala</title>

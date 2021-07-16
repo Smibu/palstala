@@ -1,33 +1,40 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/client";
 import prisma from "../../../src/client";
+import {
+  getReqData,
+  getSessionTyped,
+  ResponseData,
+  validateData,
+} from "../../../src/utils";
+import * as t from "io-ts";
 
-type Data =
-  | {
-      id: string;
-    }
-  | { error: string };
+const PostReqCodec = t.type({
+  content: t.string,
+  title: t.string,
+});
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ResponseData>
 ) {
   switch (req.method) {
     case "GET":
       break;
     case "POST":
-      const sess = await getSession({ req });
+      const sess = await getSessionTyped({ req });
       if (!sess) {
         res.status(401).json({ error: "Authorization required" });
         break;
       }
+      const r = validateData(PostReqCodec, getReqData(req), res);
+      if (!r) {
+        return;
+      }
       const topic = await prisma.topic.create({
         data: {
-          title: req.body.title,
+          title: r.title,
           posts: {
-            create: [
-              { content: req.body.content, authorId: sess.userId as string },
-            ],
+            create: [{ content: r.content, authorId: sess.userId }],
           },
         },
       });

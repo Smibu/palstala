@@ -6,6 +6,7 @@ import Link from "../src/Link";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
 import prisma from "../src/client";
+import { UserDisplay } from "../src/UserDisplay";
 
 const TopicsPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -51,7 +52,7 @@ export const getServerSideProps = async (
       image: true,
     },
   });
-  const userMap = new Map();
+  const userMap = new Map<string, UserDisplay>();
   for (const u of users) {
     userMap.set(u.id, u);
   }
