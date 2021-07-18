@@ -7,6 +7,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
 import prisma from "../src/client";
 import { UserDisplay } from "../src/UserDisplay";
+import { getSession } from "next-auth/client";
 
 const TopicsPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -26,6 +27,7 @@ export default TopicsPage;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
+  const session = await getSession(context);
   const topics = await prisma.topic.findMany({
     select: {
       id: true,
@@ -59,6 +61,7 @@ export const getServerSideProps = async (
 
   return {
     props: {
+      session,
       topics: topics.map((t) => ({
         id: t.id,
         title: t.title,

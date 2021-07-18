@@ -15,7 +15,7 @@ import prisma from "../../src/client";
 import { UserDisplayNoId } from "../../src/UserDisplay";
 import { UserAvatar } from "../../src/UserAvatar";
 import { Controller, useForm } from "react-hook-form";
-import { useSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
@@ -159,6 +159,7 @@ export default TopicPage;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
+  const session = await getSession(context);
   const topic = await prisma.topic.findUnique({
     where: { id: context.params!.id as string },
     include: {
@@ -179,6 +180,6 @@ export const getServerSideProps = async (
     },
   });
   return {
-    props: { topic },
+    props: { topic, session },
   };
 };
