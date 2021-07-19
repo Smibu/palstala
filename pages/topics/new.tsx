@@ -15,7 +15,7 @@ export default function Page() {
       <Head>
         <title>New topic - Palstala</title>
       </Head>
-      {!session && <>Please sign in to create a topic.</>}
+      {!session && <Typography>Please sign in to create a topic.</Typography>}
       {session && (
         <>
           <Typography variant="h4">New topic</Typography>
