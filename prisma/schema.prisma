@@ -32,9 +32,11 @@ model Post {
 }
 
 enum Role {
+  NEWUSER
   USER
   MODERATOR
   ADMIN
+  BANNED
 }
 
 // NextAuth.js-related models
@@ -77,7 +79,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  role          Role      @default(USER)
+  role          Role      @default(NEWUSER)
   posts         Post[]
 }
 
