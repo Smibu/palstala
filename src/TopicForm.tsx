@@ -19,6 +19,7 @@ export const TopicForm = (props: { onSubmit: (v: FormData) => void }) => {
             fieldState: { invalid, isTouched, isDirty, error },
           }) => (
             <TextField
+              id="title"
               label="Topic title"
               {...field}
               required
@@ -36,6 +37,7 @@ export const TopicForm = (props: { onSubmit: (v: FormData) => void }) => {
             fieldState: { invalid, isTouched, isDirty, error },
           }) => (
             <TextField
+              id="content"
               error={invalid && isTouched}
               label="Content"
               {...field}

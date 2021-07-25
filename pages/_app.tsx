@@ -9,6 +9,18 @@ import createCache from "@emotion/cache";
 import Router from "next/router";
 import NProgress from "nprogress";
 import { Session } from "next-auth";
+import { setupServer } from "msw/node";
+
+export const requestInterceptor =
+  process.env.PLAYWRIGHT === "1" && typeof window === "undefined"
+    ? (() => {
+        const requestInterceptor = setupServer();
+        requestInterceptor.listen({
+          onUnhandledRequest: "bypass",
+        });
+        return requestInterceptor;
+      })()
+    : undefined;
 
 const cache = createCache({ key: "css", prepend: true });
 cache.compat = true;

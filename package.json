@@ -10,8 +10,10 @@
     "docker:up": "docker-compose up -d",
     "test": "npm run docker:up && npm run test:migrate && npm run test:playwright",
     "test:playwright": "NODE_ENV=test dotenv -c test playwright test",
+    "test:playwright:debug": "PWDEBUG=1 npm run test:playwright",
     "test:migrate": "NODE_ENV=test dotenv -c test prisma migrate dev",
-    "test:skipbuild": "SKIP_BUILD=1 npm run test:playwright"
+    "test:skipbuild": "SKIP_BUILD=1 npm run test:playwright",
+    "test:skipbuild:debug": "PWDEBUG=1 npm run test:skipbuild"
   },
   "dependencies": {
     "@emotion/react": "^11.4.0",
@@ -43,6 +45,7 @@
     "dotenv-cli": "^4.0.0",
     "eslint": "7.29.0",
     "eslint-config-next": "11.0.1",
+    "msw": "^0.33.0",
     "prettier": "^2.3.2",
     "prisma": "^2.26.0",
     "typescript": "4.3.4"
