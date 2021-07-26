@@ -7,13 +7,14 @@
     "build": "dotenv -c development next build",
     "start": "dotenv -c development next start",
     "lint": "eslint .",
-    "docker:up": "docker-compose up -d",
-    "test": "npm run docker:up && npm run test:migrate && npm run test:playwright",
-    "test:playwright": "NODE_ENV=test dotenv -c test playwright test",
-    "test:playwright:debug": "PWDEBUG=1 npm run test:playwright",
+    "test": "docker-compose up -d db && npm run test:migrate,pw",
+    "test:migrate,pw": "npm run test:migrate && npm run test:pw",
+    "test:pw": "NODE_ENV=test dotenv -c test playwright test",
+    "test:pw:debug": "PWDEBUG=1 npm run test:pw",
     "test:migrate": "NODE_ENV=test dotenv -c test prisma migrate dev",
-    "test:skipbuild": "SKIP_BUILD=1 npm run test:playwright",
-    "test:skipbuild:debug": "PWDEBUG=1 npm run test:skipbuild"
+    "test:pw:skipbuild": "SKIP_BUILD=1 npm run test:pw",
+    "test:pw:skipbuild:debug": "PWDEBUG=1 npm run test:pw:skipbuild",
+    "test:docker": "docker-compose run --rm tests"
   },
   "dependencies": {
     "@emotion/react": "^11.4.0",
@@ -37,7 +38,7 @@
     "superjson": "^1.7.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.12.3",
+    "@playwright/test": "^1.13.0",
     "@types/nprogress": "^0.2.0",
     "@types/react": "17.0.11",
     "@typescript-eslint/eslint-plugin": "^4.28.3",

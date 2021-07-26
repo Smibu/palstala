@@ -27,6 +27,6 @@ test("create new topic", async ({ page, port, useUser, waitLoad }) => {
   await page.click("text=Create");
   await waitLoad();
   await page.goto(`http://localhost:${port}/`);
-  await page.waitForLoadState("domcontentloaded");
+  await page.waitForLoadState("networkidle");
   expect(await page.screenshot()).toMatchSnapshot("one-topic.png");
 });

@@ -49,8 +49,9 @@ const nextTest = test.extend<
   requestInterceptor: [
     async ({}, use) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const requestInterceptor = require("../.next/server/pages/_app")
-        .requestInterceptor as SetupServerApi;
+      const requestInterceptor = require(`../${
+        process.env.BUILD_DIR || ".next"
+      }/server/pages/_app`).requestInterceptor as SetupServerApi;
       await use(requestInterceptor);
       requestInterceptor.resetHandlers();
     },
