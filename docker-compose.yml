@@ -19,3 +19,4 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/tests
       BUILD_DIR: .next-docker
+    user: ${DOCKER_USER:-1000:1000}
