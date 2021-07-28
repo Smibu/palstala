@@ -10,12 +10,14 @@
     "test": "docker-compose up -d db && npm run test:migrate,pw",
     "test:migrate,pw": "npm run test:migrate && npm run test:pw",
     "test:pw": "NODE_ENV=test dotenv -c test playwright test",
+    "test:pw:updatesnapshots": "NODE_ENV=test dotenv -c test -- playwright test --update-snapshots",
     "test:pw:debug": "PWDEBUG=1 npm run test:pw",
     "test:migrate": "NODE_ENV=test dotenv -c test prisma migrate dev",
     "test:pw:skipbuild": "SKIP_BUILD=1 npm run test:pw",
     "test:pw:skipbuild:debug": "PWDEBUG=1 npm run test:pw:skipbuild",
     "test:docker": "docker-compose run --rm tests",
     "test:docker:skipbuild": "docker-compose run --rm tests npm run test:pw:skipbuild",
+    "test:docker:updatesnapshots": "docker-compose run --rm tests npm run test:pw:updatesnapshots",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
