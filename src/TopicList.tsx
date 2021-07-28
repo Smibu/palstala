@@ -24,7 +24,6 @@ export const TopicList: React.FC<{
       <TableHead>
         <TableRow>
           <TableCell>Title</TableCell>
-          <TableCell align="right">Tags</TableCell>
           <TableCell align="right">Participants</TableCell>
         </TableRow>
       </TableHead>
@@ -41,7 +40,6 @@ export const TopicList: React.FC<{
                 )}
               </Stack>
             </TableCell>
-            <TableCell align="right">TODO</TableCell>
             <TableCell align="right">
               <UserAvatarGroup users={row.users} />
             </TableCell>
