@@ -8,6 +8,8 @@ import React from "react";
 import prisma from "../src/client";
 import { UserDisplay } from "../src/UserDisplay";
 import { getSession } from "next-auth/client";
+import { getVisibleTopics } from "../src/topic";
+import { getSessionTyped } from "../src/utils";
 
 const TopicsPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -27,21 +29,10 @@ export default TopicsPage;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const session = await getSession(context);
-  const topics = await prisma.topic.findMany({
-    select: {
-      id: true,
-      title: true,
-      posts: {
-        select: {
-          authorId: true,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-    },
-  });
+  const session = await getSessionTyped(context);
+  const topics = await getVisibleTopics(
+    session ? { id: session.userId, role: session.userRole } : undefined
+  );
   const users = await prisma.user.findMany({
     where: {
       id: {

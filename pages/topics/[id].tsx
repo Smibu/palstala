@@ -11,16 +11,17 @@ import {
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React, { useState } from "react";
 import { Post } from "@prisma/client";
-import prisma from "../../src/client";
 import { UserDisplayNoId } from "../../src/UserDisplay";
 import { UserAvatar } from "../../src/UserAvatar";
 import { Controller, useForm } from "react-hook-form";
-import { getSession, useSession } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { getSessionTyped } from "../../src/utils";
+import { getTopicWithVisiblePosts } from "../../src/topic";
 
 const TopicPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -159,26 +160,11 @@ export default TopicPage;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const session = await getSession(context);
-  const topic = await prisma.topic.findUnique({
-    where: { id: context.params!.id as string },
-    include: {
-      posts: {
-        orderBy: {
-          createdAt: "asc",
-        },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const session = await getSessionTyped(context);
+  const topic = await getTopicWithVisiblePosts(
+    context.params!.id as string,
+    session ? { id: session.userId, role: session.userRole } : undefined
+  );
   return {
     props: { topic, session },
   };

@@ -7,6 +7,7 @@ import { AddressInfo } from "net";
 import { SetupServerApi } from "msw/node";
 import { rest } from "msw";
 import prisma from "../src/client";
+import { createUser, getModule } from "./utils";
 
 type UseUserFn = (userId: string, name: string) => Promise<void>;
 
@@ -49,9 +50,8 @@ const nextTest = test.extend<
   requestInterceptor: [
     async ({}, use) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const requestInterceptor = require(`../${
-        process.env.BUILD_DIR || ".next"
-      }/server/pages/_app`).requestInterceptor as SetupServerApi;
+      const requestInterceptor = getModule(`pages/_app`)
+        .requestInterceptor as SetupServerApi;
       await use(requestInterceptor);
       requestInterceptor.resetHandlers();
     },
@@ -69,12 +69,7 @@ const nextTest = test.extend<
       use: (x: UseUserFn) => void
     ) => {
       await use(async (userId, userName) => {
-        const userData = { id: userId, name: userName };
-        await prisma.user.upsert({
-          where: { id: userId },
-          create: userData,
-          update: userData,
-        });
+        await createUser(userId, userName);
         requestInterceptor.use(
           rest.get(
             `http://localhost:${port}/api/auth/session`,
@@ -101,6 +96,7 @@ const nextTest = test.extend<
       await prisma.$transaction([
         prisma.post.deleteMany(),
         prisma.topic.deleteMany(),
+        prisma.user.deleteMany(),
       ]);
     },
     {
