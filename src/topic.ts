@@ -1,9 +1,6 @@
 import { Role } from "@prisma/client";
 import prisma from "./client";
-
-function isModOrAdmin(role: Role) {
-  return role === Role.ADMIN || role === Role.MODERATOR;
-}
+import { isApprovedRole, isModOrAdmin } from "./roles";
 
 export async function getTopicWithVisiblePosts(
   topicId: string,
@@ -41,10 +38,6 @@ export async function getTopicWithVisiblePosts(
       },
     },
   });
-}
-
-function isApprovedRole(role: Role) {
-  return role !== Role.NEWUSER && role !== Role.BANNED;
 }
 
 export async function getVisibleTopics(

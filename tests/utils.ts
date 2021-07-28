@@ -1,11 +1,7 @@
 import { Role } from "@prisma/client";
 import prisma from "../src/client";
 
-export function createUser(
-  id: string,
-  name: string,
-  role: Role = Role.NEWUSER
-) {
+export function createUser(id: string, name: string, role: Role) {
   return prisma.user.upsert({
     where: { id },
     create: { id, name, role },

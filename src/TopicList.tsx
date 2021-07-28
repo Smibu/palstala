@@ -1,19 +1,23 @@
 import {
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@material-ui/core";
-import { Topic } from "@prisma/client";
+import { Role, Topic } from "@prisma/client";
 import React from "react";
 import Link from "./Link";
 import { UserDisplay } from "./UserDisplay";
 import { UserAvatarGroup } from "./UserAvatarGroup";
+import { isApprovedRole } from "./roles";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
 
 export const TopicList: React.FC<{
-  topics: (Topic & { users: UserDisplay[] })[];
+  topics: (Topic & { users: UserDisplay[]; authorRole: Role })[];
 }> = (props) => (
   <TableContainer>
     <Table>
@@ -28,7 +32,14 @@ export const TopicList: React.FC<{
         {props.topics.map((row) => (
           <TableRow key={row.id}>
             <TableCell component="th" scope="row">
-              <Link href={`/topics/${row.id}`}>{row.title}</Link>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Link href={`/topics/${row.id}`}>{row.title}</Link>
+                {isApprovedRole(row.authorRole) ? null : (
+                  <Tooltip title="Awaiting moderator approval">
+                    <AccessTimeIcon />
+                  </Tooltip>
+                )}
+              </Stack>
             </TableCell>
             <TableCell align="right">TODO</TableCell>
             <TableCell align="right">

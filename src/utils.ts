@@ -3,13 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { PathReporter } from "io-ts/PathReporter";
-import { Role } from "@prisma/client";
-
-interface TypedSession {
-  user: { name?: string };
-  userId: string;
-  userRole: Role;
-}
+import { TypedSession } from "./typedSession";
 
 export async function getSessionTyped(
   options?: GetSessionOptions

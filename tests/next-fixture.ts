@@ -5,11 +5,13 @@ import next from "next";
 import path from "path";
 import { AddressInfo } from "net";
 import { SetupServerApi } from "msw/node";
-import { rest } from "msw";
+import { ResponseComposition, rest } from "msw";
 import prisma from "../src/client";
 import { createUser, getModule } from "./utils";
+import { Role } from "@prisma/client";
+import { TypedSession } from "../src/typedSession";
 
-type UseUserFn = (userId: string, name: string) => Promise<void>;
+type UseUserFn = (userId: string, name: string, role: Role) => Promise<void>;
 
 const nextTest = test.extend<
   {
@@ -68,16 +70,17 @@ const nextTest = test.extend<
       }: { requestInterceptor: SetupServerApi; page: Page; port: number },
       use: (x: UseUserFn) => void
     ) => {
-      await use(async (userId, userName) => {
-        await createUser(userId, userName);
+      await use(async (userId, userName, role) => {
+        await createUser(userId, userName, role);
         requestInterceptor.use(
           rest.get(
             `http://localhost:${port}/api/auth/session`,
-            (req, res, ctx) => {
+            (req, res: ResponseComposition<TypedSession>, ctx) => {
               return res(
                 ctx.json({
                   user: { name: userName },
                   userId: userId,
+                  userRole: role,
                 })
               );
             }
@@ -89,6 +92,7 @@ const nextTest = test.extend<
             body: JSON.stringify({
               user: { name: userName },
               userId: userId,
+              userRole: role,
             }),
           })
         );

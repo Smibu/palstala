@@ -14,7 +14,8 @@
     "test:migrate": "NODE_ENV=test dotenv -c test prisma migrate dev",
     "test:pw:skipbuild": "SKIP_BUILD=1 npm run test:pw",
     "test:pw:skipbuild:debug": "PWDEBUG=1 npm run test:pw:skipbuild",
-    "test:docker": "docker-compose run --rm tests"
+    "test:docker": "docker-compose run --rm tests",
+    "test:docker:skipbuild": "docker-compose run --rm tests npm run test:pw:skipbuild"
   },
   "dependencies": {
     "@emotion/react": "^11.4.0",

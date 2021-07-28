@@ -7,7 +7,6 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
 import prisma from "../src/client";
 import { UserDisplay } from "../src/UserDisplay";
-import { getSession } from "next-auth/client";
 import { getVisibleTopics } from "../src/topic";
 import { getSessionTyped } from "../src/utils";
 
@@ -59,6 +58,7 @@ export const getServerSideProps = async (
         users: [...new Set(t.posts.map((p) => p.authorId))].map(
           (uid) => userMap.get(uid)!
         ),
+        authorRole: t.posts[0].author.role,
       })),
     },
   };

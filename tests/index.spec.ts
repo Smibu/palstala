@@ -21,7 +21,7 @@ test("create new topic requires login", async ({ page, port, waitLoad }) => {
 });
 
 test("create new topic", async ({ page, port, useUser, waitLoad }) => {
-  await useUser("1", "Test User");
+  await useUser("1", "Test User", Role.USER);
   await page.goto(`http://localhost:${port}/`);
   const avatarText = await page.innerText(".MuiAvatar-root");
   expect(avatarText).toBe("TU");
@@ -102,4 +102,38 @@ test("a normal user cannot see posts from newusers", async ({ useUser }) => {
     const vis = await getVisibleTopics(u);
     expect(vis!.map((t) => t.title)).toStrictEqual(exp);
   }
+});
+
+test("topics of unapproved users have a marker", async ({
+  page,
+  port,
+  waitLoad,
+  useUser,
+}) => {
+  const [u1, u2] = await prisma.$transaction([
+    createUser("1", "New User", Role.NEWUSER),
+    createUser("2", "Normal User", Role.USER),
+  ]);
+  await prisma.$transaction([
+    prisma.topic.create({
+      data: {
+        title: "Topic 1",
+        posts: {
+          create: [{ content: "test1", authorId: u1.id }],
+        },
+      },
+    }),
+    prisma.topic.create({
+      data: {
+        title: "Topic 2",
+        posts: {
+          create: [{ content: "test2", authorId: u2.id }],
+        },
+      },
+    }),
+  ]);
+  await useUser("3", "Moderator", Role.MODERATOR);
+  await page.goto(`http://localhost:${port}/`);
+  await page.waitForLoadState("networkidle");
+  expect(await page.screenshot()).toMatchSnapshot("unapproved-user-topic.png");
 });
