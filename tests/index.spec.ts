@@ -7,7 +7,7 @@ import { getTopicWithVisiblePosts, getVisibleTopics } from "../src/topic";
 
 test("index page", async ({ page, port }) => {
   await page.goto(`http://localhost:${port}/`);
-  const name = await page.innerText("h2");
+  const name = await page.innerText("h1");
   expect(name).toBe("Palstala");
 });
 
@@ -16,8 +16,8 @@ test("create new topic requires login", async ({ page, port, waitLoad }) => {
   await page.click("text=New topic");
   await waitLoad();
   expect(await page.title()).toBe("New topic - Palstala");
-  const txt = await page.innerText("p");
-  expect(txt).toBe("Please sign in to create a topic.");
+  const txt = await page.textContent("body");
+  expect(txt).toContain("Please sign in to create a topic.");
 });
 
 test("create new topic", async ({ page, port, useUser, waitLoad }) => {
@@ -32,7 +32,8 @@ test("create new topic", async ({ page, port, useUser, waitLoad }) => {
   await waitLoad();
   await page.goto(`http://localhost:${port}/`);
   await page.waitForLoadState("networkidle");
-  expect(await page.screenshot()).toMatchSnapshot("one-topic.png");
+  const table = await page.$(".MuiTable-root");
+  expect(await table!.screenshot()).toMatchSnapshot("one-topic.png");
 });
 
 test("a normal user cannot see posts from newusers", async ({ useUser }) => {
@@ -135,5 +136,8 @@ test("topics of unapproved users have a marker", async ({
   await useUser("3", "Moderator", Role.MODERATOR);
   await page.goto(`http://localhost:${port}/`);
   await page.waitForLoadState("networkidle");
-  expect(await page.screenshot()).toMatchSnapshot("unapproved-user-topic.png");
+  const table = await page.$(".MuiTable-root");
+  expect(await table!.screenshot()).toMatchSnapshot(
+    "unapproved-user-topic.png"
+  );
 });
