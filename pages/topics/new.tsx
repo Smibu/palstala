@@ -18,7 +18,7 @@ export default function Page() {
       {!session && <Typography>Please sign in to create a topic.</Typography>}
       {session && (
         <>
-          <Typography variant="h4">New topic</Typography>
+          <Typography variant="h3">New topic</Typography>
           <TopicForm
             onSubmit={async (v) => {
               const result = await axios.post<{ id: number }>("/api/topics", v);

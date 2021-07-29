@@ -34,7 +34,7 @@ const TopicPage: React.FC<
   const topic = props.topic;
   return (
     <Layout>
-      <Typography variant="h4">{props.topic.title}</Typography>
+      <Typography variant="h3">{props.topic.title}</Typography>
       <Stack direction="column" spacing={2}>
         {props.topic.posts.map((p) => (
           <PostC

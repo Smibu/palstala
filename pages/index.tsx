@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { Layout } from "../src/Layout";
 import AddIcon from "@material-ui/icons/Add";
 import { TopicList } from "../src/TopicList";
@@ -14,6 +14,7 @@ const TopicsPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = (props) => (
   <Layout>
+    <Typography variant="h3">Topics</Typography>
     <TopicList topics={props.topics} />
     <Link href="/topics/new">
       <Button startIcon={<AddIcon />} variant="contained">
