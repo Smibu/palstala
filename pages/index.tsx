@@ -15,7 +15,11 @@ const TopicsPage: React.FC<
 > = (props) => (
   <Layout>
     <Typography variant="h3">Topics</Typography>
-    <TopicList topics={props.topics} />
+    {props.topics.length > 0 ? (
+      <TopicList topics={props.topics} />
+    ) : (
+      <Typography>There are no topics yet.</Typography>
+    )}
     <Link href="/topics/new">
       <Button startIcon={<AddIcon />} variant="contained">
         New topic
