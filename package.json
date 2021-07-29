@@ -7,6 +7,7 @@
     "build": "dotenv -c development next build",
     "start": "dotenv -c development next start",
     "lint": "eslint .",
+    "initdb": "docker-compose up -d db && dotenv -c development prisma migrate dev",
     "test": "docker-compose up -d db && npm run test:migrate,pw",
     "test:migrate,pw": "npm run test:migrate && npm run test:pw",
     "test:pw": "NODE_ENV=test dotenv -c test playwright test",
