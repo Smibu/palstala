@@ -1,13 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../src/client";
 import {
+  authRequired,
   getReqData,
   getSessionTyped,
   handleResult,
-  ResponseData,
+  notFoundOrNotAccessible,
   validateData,
 } from "../../../src/utils";
 import * as t from "io-ts";
+import { isModOrAdmin } from "../../../src/roles";
+import { ResponseData } from "../../../src/responseData";
 
 const PutReqCodec = t.type({
   id: t.string,
@@ -24,9 +27,10 @@ export default async function handler(
 ) {
   const sess = await getSessionTyped({ req });
   if (!sess) {
-    res.status(401).json({ error: "Authorization required" });
+    authRequired(res);
     return;
   }
+  const modOrAdmin = isModOrAdmin(sess.userRole);
   switch (req.method) {
     case "GET":
       break;
@@ -35,10 +39,13 @@ export default async function handler(
       if (!r) {
         return;
       }
+      if (!modOrAdmin) {
+        notFoundOrNotAccessible(res);
+        return;
+      }
       const result = await prisma.post.deleteMany({
         where: {
           id: r.id,
-          authorId: sess.userId,
         },
       });
       handleResult(result, res, req);
@@ -49,11 +56,13 @@ export default async function handler(
       if (!r) {
         return;
       }
+      const whereClause = modOrAdmin
+        ? {
+            id: r.id,
+          }
+        : { id: r.id, authorId: sess.userId };
       const result = await prisma.post.updateMany({
-        where: {
-          id: r.id,
-          authorId: sess.userId,
-        },
+        where: whereClause,
         data: {
           content: r.content,
         },

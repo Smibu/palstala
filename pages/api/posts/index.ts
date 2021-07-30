@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../src/client";
 import {
+  authRequired,
   getReqData,
   getSessionTyped,
-  ResponseData,
   validateData,
 } from "../../../src/utils";
 import * as t from "io-ts";
+import { ResponseData } from "../../../src/responseData";
 
 const PostReqCodec = t.type({
   topic: t.string,
@@ -23,7 +24,7 @@ export default async function handler(
     case "POST":
       const sess = await getSessionTyped({ req });
       if (!sess) {
-        res.status(401).json({ error: "Authorization required" });
+        authRequired(res);
         break;
       }
       const r = validateData(PostReqCodec, getReqData(req), res);

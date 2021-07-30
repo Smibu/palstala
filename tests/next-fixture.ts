@@ -11,12 +11,16 @@ import { createUser, getModule } from "./utils";
 import { Role } from "@prisma/client";
 import { TypedSession } from "../src/typedSession";
 
-type UseUserFn = (userId: string, name: string, role: Role) => Promise<void>;
+type UseUserFn = (
+  userId: string,
+  name: string | null,
+  role: Role
+) => Promise<void>;
 
 const nextTest = test.extend<
   {
     requestInterceptor: SetupServerApi;
-    useUser: UseUserFn;
+    loginUser: UseUserFn;
     waitLoad: () => Promise<void>;
   },
   { port: number; rest: typeof rest }
@@ -61,7 +65,7 @@ const nextTest = test.extend<
       scope: "test",
     },
   ],
-  useUser: [
+  loginUser: [
     async (
       {
         requestInterceptor,

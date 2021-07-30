@@ -4,6 +4,7 @@ import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { PathReporter } from "io-ts/PathReporter";
 import { TypedSession } from "./typedSession";
+import { ResponseData } from "./responseData";
 
 export async function getSessionTyped(
   options?: GetSessionOptions
@@ -11,11 +12,9 @@ export async function getSessionTyped(
   return (await getSession(options)) as TypedSession | null;
 }
 
-export type ResponseData =
-  | {
-      id: string;
-    }
-  | { error: string };
+export function notFoundOrNotAccessible(res: NextApiResponse<ResponseData>) {
+  res.status(404).json({ error: "Post not found or not accessible" });
+}
 
 export function handleResult(
   result: { count: number },
@@ -23,7 +22,7 @@ export function handleResult(
   req: NextApiRequest
 ) {
   if (result.count === 0) {
-    res.status(404).json({ error: "Post not found or not accessible" });
+    notFoundOrNotAccessible(res);
     return;
   }
   res.status(200).json({ id: req.query.id as string });
@@ -47,4 +46,8 @@ export function getReqData(req: NextApiRequest) {
     ...req.query,
     ...req.body,
   } as unknown;
+}
+
+export function authRequired(res: NextApiResponse<ResponseData>) {
+  res.status(401).json({ error: "Authorization required" });
 }

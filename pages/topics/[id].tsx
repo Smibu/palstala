@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React, { useState } from "react";
-import { Post } from "@prisma/client";
+import { Post, Role } from "@prisma/client";
 import { UserDisplayNoId } from "../../src/UserDisplay";
 import { UserAvatar } from "../../src/UserAvatar";
 import { Controller, useForm } from "react-hook-form";
@@ -22,26 +22,34 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { getSessionTyped } from "../../src/utils";
 import { getTopicWithVisiblePosts } from "../../src/topic";
+import { isModOrAdmin } from "../../src/roles";
+import { TypedSession } from "../../src/typedSession";
+
+function useSessionTyped() {
+  return useSession() as [TypedSession | null, boolean];
+}
 
 const TopicPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = (props) => {
-  const [session, loading] = useSession();
+  const [session, loading] = useSessionTyped();
   const router = useRouter();
   if (!props.topic) {
     return <Typography>Topic not found</Typography>;
   }
+  const isMod = isModOrAdmin(session?.userRole ?? Role.USER);
   const topic = props.topic;
   return (
     <Layout>
       <Typography variant="h3">{props.topic.title}</Typography>
-      <Stack direction="column" spacing={2}>
+      <Stack direction="column" spacing={2} className="posts">
         {props.topic.posts.map((p) => (
           <PostC
             key={p.id}
             post={p}
             author={p.author}
-            editable={true}
+            editable={!!session && (p.author.id === session.userId || isMod)}
+            deletable={!!session && isMod}
             onSubmit={async (data: { content: string }) => {
               await axios.put(`/api/posts/${p.id}`, {
                 content: data.content,
@@ -54,8 +62,9 @@ const TopicPage: React.FC<
       {session && (
         <PostC
           post={null}
-          author={session.user!}
+          author={session.user}
           editable={true}
+          deletable={false}
           onSubmit={async (data: { content: string }) => {
             await axios.post(`/api/posts`, {
               content: data.content,
@@ -74,6 +83,7 @@ const PostC: React.FC<{
   post: Post | null;
   author: UserDisplayNoId;
   editable: boolean;
+  deletable: boolean;
   onSubmit: (data: { content: string }) => Promise<unknown>;
 }> = (props) => {
   const isNew = props.post === null;
@@ -100,19 +110,23 @@ const PostC: React.FC<{
           justifyContent={"space-between"}
         >
           <UserAvatar user={props.author} />
-          {props.editable && !isNew && (
+          {!isNew && (
             <Stack direction={"row"}>
-              <IconButton onClick={() => setEditing(!editing)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                onClick={async () => {
-                  await axios.delete(`/api/posts/${props.post!.id}`);
-                  await router.replace(router.asPath);
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {props.editable && (
+                <IconButton onClick={() => setEditing(!editing)}>
+                  <EditIcon />
+                </IconButton>
+              )}
+              {props.deletable && (
+                <IconButton
+                  onClick={async () => {
+                    await axios.delete(`/api/posts/${props.post!.id}`);
+                    await router.replace(router.asPath);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </Stack>
           )}
         </Stack>

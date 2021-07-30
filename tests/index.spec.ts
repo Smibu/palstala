@@ -4,6 +4,8 @@ import { createUser } from "./utils";
 import { Role } from "@prisma/client";
 import prisma from "../src/client";
 import { getTopicWithVisiblePosts, getVisibleTopics } from "../src/topic";
+import axios, { AxiosError } from "axios";
+import { ResponseData } from "../src/responseData";
 
 test("index page", async ({ page, port }) => {
   await page.goto(`http://localhost:${port}/`);
@@ -20,8 +22,8 @@ test("create new topic requires login", async ({ page, port, waitLoad }) => {
   expect(txt).toContain("Please sign in to create a topic.");
 });
 
-test("create new topic", async ({ page, port, useUser, waitLoad }) => {
-  await useUser("1", "Test User", Role.USER);
+test("create new topic", async ({ page, port, loginUser, waitLoad }) => {
+  await loginUser("1", "Test User", Role.USER);
   await page.goto(`http://localhost:${port}/`);
   const avatarText = await page.innerText(".MuiAvatar-root");
   expect(avatarText).toBe("TU");
@@ -36,7 +38,7 @@ test("create new topic", async ({ page, port, useUser, waitLoad }) => {
   expect(await table!.screenshot()).toMatchSnapshot("one-topic.png");
 });
 
-test("a normal user cannot see posts from newusers", async ({ useUser }) => {
+async function createTestData() {
   const [u1, u2, u3, u4] = await prisma.$transaction([
     createUser("1", "New User", Role.NEWUSER),
     createUser("2", "New User 2", Role.NEWUSER),
@@ -55,6 +57,7 @@ test("a normal user cannot see posts from newusers", async ({ useUser }) => {
         ],
       },
     },
+    select: { id: true, posts: true },
   });
   await prisma.$transaction([
     prisma.topic.create({
@@ -82,6 +85,11 @@ test("a normal user cannot see posts from newusers", async ({ useUser }) => {
       },
     }),
   ]);
+  return { u1, u2, u3, u4, t };
+}
+
+test("a normal user cannot see posts from newusers", async ({ loginUser }) => {
+  const { u1, u2, u3, u4, t } = await createTestData();
   const expectedVisibilities = [
     [u1, ["test1", "test3", "test4"]],
     [u2, ["test2", "test3", "test4"]],
@@ -105,11 +113,53 @@ test("a normal user cannot see posts from newusers", async ({ useUser }) => {
   }
 });
 
+test("posts can be edited by mods and authors, and deleted by mods", async ({
+  page,
+  port,
+  loginUser,
+}) => {
+  const { u1, u2, u3, u4, t } = await createTestData();
+  const expectedResponses = {
+    "2": { put: [404, 200, 404, 404], delete: [404, 404, 404, 404] },
+    "3": { put: [404, 404, 200, 404], delete: [404, 404, 404, 404] },
+    "4": { put: [200, 200, 200, 200], delete: [200, 200, 200, 200] },
+  };
+  for (const u of [u2, u3, u4]) {
+    await loginUser(u.id, u.name, u.role);
+    await page.goto(`http://localhost:${port}/topics/${t.id}`);
+    const posts = await page.$(".posts");
+    expect(await posts!.screenshot()).toMatchSnapshot(`topic-u${u.id}.png`);
+  }
+  for (const u of [u2, u3, u4]) {
+    await loginUser(u.id, u.name, u.role);
+    for (const [method, expected] of Object.entries(
+      expectedResponses[u.id as "2" | "3" | "4"]
+    )) {
+      const m = method as "put" | "delete";
+      const r = await Promise.all(
+        [0, 1, 2, 3].map((i) =>
+          axios
+            .request<ResponseData>({
+              method: m,
+              url: `http://localhost:${port}/api/posts/${t.posts[i].id}`,
+              data: {
+                content: t.posts[i].content + " edited",
+              },
+            })
+            .then((r) => r.status)
+            .catch((r: AxiosError) => r.response!.status)
+        )
+      );
+      expect(r).toStrictEqual(expected);
+    }
+  }
+});
+
 test("topics of unapproved users have a marker", async ({
   page,
   port,
   waitLoad,
-  useUser,
+  loginUser,
 }) => {
   const [u1, u2] = await prisma.$transaction([
     createUser("1", "New User", Role.NEWUSER),
@@ -133,7 +183,7 @@ test("topics of unapproved users have a marker", async ({
       },
     }),
   ]);
-  await useUser("3", "Moderator", Role.MODERATOR);
+  await loginUser("3", "Moderator", Role.MODERATOR);
   await page.goto(`http://localhost:${port}/`);
   await page.waitForLoadState("networkidle");
   const table = await page.$(".MuiTable-root");

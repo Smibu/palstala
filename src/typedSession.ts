@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 
 export interface TypedSession {
-  user: { name?: string };
+  user: { name?: string | null };
   userId: string;
   userRole: Role;
 }
