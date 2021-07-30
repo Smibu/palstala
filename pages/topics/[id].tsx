@@ -88,7 +88,7 @@ const PostC: React.FC<{
 }> = (props) => {
   const isNew = props.post === null;
   const [editing, setEditing] = useState(isNew);
-  const { handleSubmit, control } = useForm<{
+  const { handleSubmit, control, reset } = useForm<{
     content: string;
   }>({
     defaultValues: { content: props.post?.content ?? "" },
@@ -136,7 +136,11 @@ const PostC: React.FC<{
           <form
             onSubmit={handleSubmit(async (data) => {
               await props.onSubmit(data);
-              setEditing(false);
+              if (isNew) {
+                reset();
+              } else {
+                setEditing(false);
+              }
             })}
           >
             <Stack spacing={2} alignItems="flex-start">
