@@ -14,7 +14,7 @@ export const Layout: React.FC = (props) => {
   const [session, loading] = useSessionTyped();
   return (
     <Container maxWidth="sm">
-      <Stack spacing={2}>
+      <Stack spacing={2} marginBottom={1}>
         <Stack
           direction="row"
           justifyContent="space-between"
