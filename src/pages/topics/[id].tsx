@@ -1,4 +1,4 @@
-import { Layout } from "../../src/Layout";
+import { Layout } from "../../Layout";
 import {
   Button,
   Divider,
@@ -11,23 +11,17 @@ import {
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React, { useState } from "react";
 import { Post, Role } from "@prisma/client";
-import { UserDisplayNoId } from "../../src/UserDisplay";
-import { UserAvatar } from "../../src/UserAvatar";
+import { UserAvatar } from "../../user/UserAvatar";
 import { Controller, useForm } from "react-hook-form";
-import { useSession } from "next-auth/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import ReactMarkdown from "react-markdown";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { getSessionTyped } from "../../src/utils";
-import { getTopicWithVisiblePosts } from "../../src/topic";
-import { isModOrAdmin } from "../../src/roles";
-import { TypedSession } from "../../src/typedSession";
-
-function useSessionTyped() {
-  return useSession() as [TypedSession | null, boolean];
-}
+import { getTopicWithVisiblePosts } from "../../topic/topic";
+import { isModOrAdmin } from "../../user/roles";
+import { getSessionTyped, useSessionTyped } from "../../auth/session";
+import { UserVisibleInfo } from "../../user/UserVisibleInfo";
 
 const TopicPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -81,7 +75,7 @@ const TopicPage: React.FC<
 
 const PostC: React.FC<{
   post: Post | null;
-  author: UserDisplayNoId;
+  author: UserVisibleInfo;
   editable: boolean;
   deletable: boolean;
   onSubmit: (data: { content: string }) => Promise<unknown>;

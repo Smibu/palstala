@@ -1,14 +1,14 @@
 import { Button, Typography } from "@material-ui/core";
-import { Layout } from "../src/Layout";
+import { Layout } from "../Layout";
 import AddIcon from "@material-ui/icons/Add";
-import { TopicList } from "../src/TopicList";
-import Link from "../src/Link";
+import { TopicList } from "../topic/TopicList";
+import Link from "../Link";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import React from "react";
-import prisma from "../src/client";
-import { UserDisplay } from "../src/UserDisplay";
-import { getVisibleTopics } from "../src/topic";
-import { getSessionTyped } from "../src/utils";
+import prisma from "../dbClient";
+import { UserBasicInfo } from "../user/UserBasicInfo";
+import { getVisibleTopics } from "../topic/topic";
+import { getSessionTyped } from "../auth/session";
 
 const TopicsPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -49,7 +49,7 @@ export const getServerSideProps = async (
       image: true,
     },
   });
-  const userMap = new Map<string, UserDisplay>();
+  const userMap = new Map<string, UserBasicInfo>();
   for (const u of users) {
     userMap.set(u.id, u);
   }

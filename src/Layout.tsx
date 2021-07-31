@@ -6,12 +6,12 @@ import {
   Stack,
   Typography,
 } from "@material-ui/core";
-import { LoginMenu } from "./LoginMenu";
-import { useSession } from "next-auth/client";
+import { LoginMenu } from "./auth/LoginMenu";
 import Link from "./Link";
+import { useSessionTyped } from "./auth/session";
 
 export const Layout: React.FC = (props) => {
-  const [session, loading] = useSession();
+  const [session, loading] = useSessionTyped();
   return (
     <Container maxWidth="sm">
       <Stack spacing={2}>

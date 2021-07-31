@@ -1,8 +1,10 @@
 import React from "react";
-import { UserDisplay } from "./UserDisplay";
+import { UserBasicInfo } from "./UserBasicInfo";
 import { Avatar, AvatarGroup } from "@material-ui/core";
 
-export const UserAvatarGroup: React.FC<{ users: UserDisplay[] }> = (props) => {
+export const UserAvatarGroup: React.FC<{ users: UserBasicInfo[] }> = (
+  props
+) => {
   return (
     <AvatarGroup>
       {props.users.map((u) => (

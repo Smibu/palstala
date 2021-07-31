@@ -1,6 +1,6 @@
 import { Role } from "@prisma/client";
-import prisma from "./client";
-import { isApprovedRole, isModOrAdmin } from "./roles";
+import prisma from "../dbClient";
+import { isApprovedRole, isModOrAdmin } from "../user/roles";
 
 export async function getTopicWithVisiblePosts(
   topicId: string,

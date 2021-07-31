@@ -3,7 +3,7 @@ import { Provider } from "next-auth/client";
 import { CacheProvider } from "@emotion/react";
 import Head from "next/head";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
-import theme from "../src/theme";
+import theme from "../theme";
 import createCache from "@emotion/cache";
 import Router from "next/router";
 import NProgress from "nprogress";

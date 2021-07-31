@@ -2,10 +2,10 @@ import test from "./next-fixture";
 import { expect } from "@playwright/test";
 import { createUser } from "./utils";
 import { Role } from "@prisma/client";
-import prisma from "../src/client";
-import { getTopicWithVisiblePosts, getVisibleTopics } from "../src/topic";
+import prisma from "../src/dbClient";
+import { getTopicWithVisiblePosts, getVisibleTopics } from "../src/topic/topic";
 import axios, { AxiosError } from "axios";
-import { ResponseData } from "../src/responseData";
+import { ApiResponse } from "../src/ApiResponse";
 
 test("index page", async ({ page, port }) => {
   await page.goto(`http://localhost:${port}/`);
@@ -139,7 +139,7 @@ test("posts can be edited by mods and authors, and deleted by mods", async ({
       const r = await Promise.all(
         [0, 1, 2, 3].map((i) =>
           axios
-            .request<ResponseData>({
+            .request<ApiResponse>({
               method: m,
               url: `http://localhost:${port}/api/posts/${t.posts[i].id}`,
               data: {

@@ -1,16 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../src/client";
-import {
-  authRequired,
-  getReqData,
-  getSessionTyped,
-  handleResult,
-  notFoundOrNotAccessible,
-  validateData,
-} from "../../../src/utils";
+import prisma from "../../../dbClient";
+import { getReqData, validateData } from "../../../utils";
 import * as t from "io-ts";
-import { isModOrAdmin } from "../../../src/roles";
-import { ResponseData } from "../../../src/responseData";
+import { isModOrAdmin } from "../../../user/roles";
+import { ApiResponse } from "../../../ApiResponse";
+import { getSessionTyped } from "../../../auth/session";
+import { authRequired, notFoundOrNotAccessible } from "../../../errorResponses";
 
 const PutReqCodec = t.type({
   id: t.string,
@@ -21,9 +16,21 @@ const DeleteReqCodec = t.type({
   id: t.string,
 });
 
+function handleDbResult(
+  result: { count: number },
+  res: NextApiResponse<ApiResponse>,
+  req: NextApiRequest
+) {
+  if (result.count === 0) {
+    notFoundOrNotAccessible(res);
+    return;
+  }
+  res.status(200).json({ id: req.query.id as string });
+}
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ApiResponse>
 ) {
   const sess = await getSessionTyped({ req });
   if (!sess) {
@@ -48,7 +55,7 @@ export default async function handler(
           id: r.id,
         },
       });
-      handleResult(result, res, req);
+      handleDbResult(result, res, req);
       break;
     }
     case "PUT":
@@ -67,7 +74,7 @@ export default async function handler(
           content: r.content,
         },
       });
-      handleResult(result, res, req);
+      handleDbResult(result, res, req);
       break;
   }
 }

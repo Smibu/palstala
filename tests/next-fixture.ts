@@ -6,10 +6,10 @@ import path from "path";
 import { AddressInfo } from "net";
 import { SetupServerApi } from "msw/node";
 import { ResponseComposition, rest } from "msw";
-import prisma from "../src/client";
+import prisma from "../src/dbClient";
 import { createUser, getModule } from "./utils";
 import { Role } from "@prisma/client";
-import { TypedSession } from "../src/typedSession";
+import { TypedSession } from "../src/auth/TypedSession";
 
 type UseUserFn = (
   userId: string,

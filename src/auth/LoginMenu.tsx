@@ -1,7 +1,7 @@
 import { User } from "next-auth";
 import { Button, Stack } from "@material-ui/core";
 import { signIn, signOut } from "next-auth/client";
-import { UserAvatar } from "./UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 
 export function LoginMenu(props: { user: User | undefined }) {
   return (

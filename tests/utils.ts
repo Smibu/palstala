@@ -1,5 +1,5 @@
 import { Role } from "@prisma/client";
-import prisma from "../src/client";
+import prisma from "../src/dbClient";
 
 export function createUser(id: string, name: string | null, role: Role) {
   return prisma.user.upsert({

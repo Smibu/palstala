@@ -1,14 +1,14 @@
-import { Layout } from "../../src/Layout";
-import { useSession } from "next-auth/client";
+import { Layout } from "../../Layout";
 import Head from "next/head";
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { TopicForm } from "../../src/TopicForm";
+import { TopicForm } from "../../topic/TopicForm";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useSessionTyped } from "../../auth/session";
 
 export default function Page() {
-  const [session, loading] = useSession();
+  const [session, loading] = useSessionTyped();
   const router = useRouter();
   return (
     <Layout>

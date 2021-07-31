@@ -1,13 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../src/client";
-import {
-  authRequired,
-  getReqData,
-  getSessionTyped,
-  validateData,
-} from "../../../src/utils";
+import prisma from "../../../dbClient";
+import { getReqData, validateData } from "../../../utils";
 import * as t from "io-ts";
-import { ResponseData } from "../../../src/responseData";
+import { ApiResponse } from "../../../ApiResponse";
+import { getSessionTyped } from "../../../auth/session";
+import { authRequired } from "../../../errorResponses";
 
 const PostReqCodec = t.type({
   content: t.string,
@@ -16,7 +13,7 @@ const PostReqCodec = t.type({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ApiResponse>
 ) {
   switch (req.method) {
     case "GET":
