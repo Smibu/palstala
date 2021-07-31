@@ -56,8 +56,9 @@ const nextTest = test.extend<
   requestInterceptor: [
     async ({}, use) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const requestInterceptor = getModule(`pages/_app`)
-        .requestInterceptor as SetupServerApi;
+      const getRequestInterceptor = getModule(`pages/_app`)
+        .getReqInterceptor as () => Promise<SetupServerApi>;
+      const requestInterceptor = await getRequestInterceptor();
       await use(requestInterceptor);
       requestInterceptor.resetHandlers();
     },

@@ -8,18 +8,20 @@ import createCache from "@emotion/cache";
 import Router from "next/router";
 import NProgress from "nprogress";
 import { Session } from "next-auth";
-import { setupServer } from "msw/node";
+import type { SetupServerApi } from "msw/node";
 
-export const requestInterceptor =
-  process.env.PLAYWRIGHT === "1" && typeof window === "undefined"
-    ? (() => {
-        const requestInterceptor = setupServer();
-        requestInterceptor.listen({
-          onUnhandledRequest: "bypass",
-        });
-        return requestInterceptor;
-      })()
-    : undefined;
+let requestInterceptor: SetupServerApi | undefined;
+
+export async function getReqInterceptor() {
+  if (requestInterceptor) {
+    return requestInterceptor;
+  }
+  requestInterceptor = (await import("msw/node")).setupServer();
+  requestInterceptor.listen({
+    onUnhandledRequest: "bypass",
+  });
+  return requestInterceptor;
+}
 
 const cache = createCache({ key: "css", prepend: true });
 cache.compat = true;
