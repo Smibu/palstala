@@ -34,9 +34,9 @@ export const Layout: React.FC = (props) => {
           learning React, Next.js and related technologies.
         </Typography>
         <Alert severity="warning">
-          <strong>Do not use Palstala for anything serious.</strong> This app
-          instance is just a demo, so there is no support, and data may be
-          deleted any time without prior notice.
+          Do not use Palstala for anything serious. This app instance is just a
+          demo, so there is no support, and data may be deleted any time without
+          prior notice.
         </Alert>
         {props.children}
       </Stack>
