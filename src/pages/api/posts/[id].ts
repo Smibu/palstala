@@ -3,7 +3,7 @@ import prisma from "../../../dbClient";
 import { getReqData, validateData } from "../../../utils";
 import * as t from "io-ts";
 import { isModOrAdmin } from "../../../user/roles";
-import { ApiResponse } from "../../../ApiResponse";
+import type { ApiResponse } from "../../../ApiResponse";
 import { getSessionTyped } from "../../../auth/session";
 import { authRequired, notFoundOrNotAccessible } from "../../../errorResponses";
 

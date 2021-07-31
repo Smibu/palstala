@@ -8,10 +8,10 @@ import {
   TableRow,
   Tooltip,
 } from "@material-ui/core";
-import { Role, Topic } from "@prisma/client";
+import type { Role, Topic } from "@prisma/client";
 import React from "react";
 import Link from "../Link";
-import { UserBasicInfo } from "../user/UserBasicInfo";
+import type { UserBasicInfo } from "../user/UserBasicInfo";
 import { UserAvatarGroup } from "../user/UserAvatarGroup";
 import { isApprovedRole } from "../user/roles";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";

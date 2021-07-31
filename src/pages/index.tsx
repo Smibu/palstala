@@ -3,10 +3,13 @@ import { Layout } from "../Layout";
 import AddIcon from "@material-ui/icons/Add";
 import { TopicList } from "../topic/TopicList";
 import Link from "../Link";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import React from "react";
 import prisma from "../dbClient";
-import { UserBasicInfo } from "../user/UserBasicInfo";
+import type { UserBasicInfo } from "../user/UserBasicInfo";
 import { getVisibleTopics } from "../topic/topic";
 import { getSessionTyped } from "../auth/session";
 

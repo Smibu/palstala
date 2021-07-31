@@ -5,7 +5,7 @@ import { Role } from "@prisma/client";
 import prisma from "../src/dbClient";
 import { getTopicWithVisiblePosts, getVisibleTopics } from "../src/topic/topic";
 import axios, { AxiosError } from "axios";
-import { ApiResponse } from "../src/ApiResponse";
+import type { ApiResponse } from "../src/ApiResponse";
 
 test("index page", async ({ page, port }) => {
   await page.goto(`http://localhost:${port}/`);

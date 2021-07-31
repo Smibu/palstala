@@ -1,4 +1,4 @@
-import { User } from "next-auth";
+import type { User } from "next-auth";
 import { Button, Stack } from "@material-ui/core";
 import { signIn, signOut } from "next-auth/client";
 import { UserAvatar } from "../user/UserAvatar";

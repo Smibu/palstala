@@ -1,5 +1,5 @@
 import React from "react";
-import { UserBasicInfo } from "./UserBasicInfo";
+import type { UserBasicInfo } from "./UserBasicInfo";
 import { Avatar, AvatarGroup } from "@material-ui/core";
 
 export const UserAvatarGroup: React.FC<{ users: UserBasicInfo[] }> = (

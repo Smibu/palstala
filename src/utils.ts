@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import * as t from "io-ts";
+import type { NextApiRequest, NextApiResponse } from "next";
+import type * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { PathReporter } from "io-ts/PathReporter";
-import { ErrorResponse } from "./ApiResponse";
+import type { ErrorResponse } from "./ApiResponse";
 
 export function validateData<T>(
   codec: t.Type<T>,

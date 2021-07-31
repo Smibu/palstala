@@ -1,5 +1,5 @@
 import { getSession, GetSessionOptions, useSession } from "next-auth/client";
-import { TypedSession } from "./TypedSession";
+import type { TypedSession } from "./TypedSession";
 
 export function useSessionTyped() {
   return useSession() as [TypedSession | null, boolean];

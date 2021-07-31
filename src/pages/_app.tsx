@@ -7,7 +7,7 @@ import theme from "../theme";
 import createCache from "@emotion/cache";
 import Router from "next/router";
 import NProgress from "nprogress";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 import type { SetupServerApi } from "msw/node";
 
 let requestInterceptor: SetupServerApi | undefined;

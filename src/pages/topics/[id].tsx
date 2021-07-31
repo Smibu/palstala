@@ -8,7 +8,10 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import React, { useState } from "react";
 import { Post, Role } from "@prisma/client";
 import { UserAvatar } from "../../user/UserAvatar";
@@ -21,7 +24,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { getTopicWithVisiblePosts } from "../../topic/topic";
 import { isModOrAdmin } from "../../user/roles";
 import { getSessionTyped, useSessionTyped } from "../../auth/session";
-import { UserVisibleInfo } from "../../user/UserVisibleInfo";
+import type { UserVisibleInfo } from "../../user/UserVisibleInfo";
 
 const TopicPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>

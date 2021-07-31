@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../dbClient";
 import { getReqData, validateData } from "../../../utils";
 import * as t from "io-ts";
-import { ApiResponse } from "../../../ApiResponse";
+import type { ApiResponse } from "../../../ApiResponse";
 import { getSessionTyped } from "../../../auth/session";
 import { authRequired } from "../../../errorResponses";
 

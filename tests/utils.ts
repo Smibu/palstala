@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import type { Role } from "@prisma/client";
 import prisma from "../src/dbClient";
 
 export function createUser(id: string, name: string | null, role: Role) {

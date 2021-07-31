@@ -3,13 +3,13 @@ import { parse } from "url";
 import { Page, test } from "@playwright/test";
 import next from "next";
 import path from "path";
-import { AddressInfo } from "net";
-import { SetupServerApi } from "msw/node";
+import type { AddressInfo } from "net";
+import type { SetupServerApi } from "msw/node";
 import { ResponseComposition, rest } from "msw";
 import prisma from "../src/dbClient";
 import { createUser, getModule } from "./utils";
-import { Role } from "@prisma/client";
-import { TypedSession } from "../src/auth/TypedSession";
+import type { Role } from "@prisma/client";
+import type { TypedSession } from "../src/auth/TypedSession";
 
 type UseUserFn = (
   userId: string,
