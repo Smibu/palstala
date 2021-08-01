@@ -25,6 +25,7 @@ import { getTopicWithVisiblePosts } from "../../topic/topic";
 import { isModOrAdmin } from "../../user/roles";
 import { getSessionTyped, useSessionTyped } from "../../auth/session";
 import type { UserVisibleInfo } from "../../user/UserVisibleInfo";
+import { PostTimestamp } from "../../PostTimestamp";
 
 const TopicPage: React.FC<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -106,7 +107,11 @@ const PostC: React.FC<{
           spacing={1}
           justifyContent={"space-between"}
         >
-          <UserAvatar user={props.author} />
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <UserAvatar user={props.author} />
+            {props.post && <PostTimestamp datetime={props.post.createdAt} />}
+          </Stack>
+
           {!isNew && (
             <Stack direction={"row"}>
               {props.editable && (
